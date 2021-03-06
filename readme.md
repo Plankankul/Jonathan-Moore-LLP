@@ -1,95 +1,214 @@
-[![PHPMailer logo](images/phpmailer.png)](https://github.com/PHPMailer/PHPMailer)
-# PHPMailer code examples
+![PHPMailer](https://raw.github.com/PHPMailer/PHPMailer/master/examples/images/phpmailer.png)
 
-This folder contains a collection of examples of using [PHPMailer](https://github.com/PHPMailer/PHPMailer).
+# PHPMailer – A full-featured email creation and transfer class for PHP
 
-## About testing email sending
+[![Test status](https://github.com/PHPMailer/PHPMailer/workflows/Tests/badge.svg)](https://github.com/PHPMailer/PHPMailer/actions) [![Latest Stable Version](https://poser.pugx.org/phpmailer/phpmailer/v/stable.svg)](https://packagist.org/packages/phpmailer/phpmailer) [![Total Downloads](https://poser.pugx.org/phpmailer/phpmailer/downloads)](https://packagist.org/packages/phpmailer/phpmailer) [![Latest Unstable Version](https://poser.pugx.org/phpmailer/phpmailer/v/unstable.svg)](https://packagist.org/packages/phpmailer/phpmailer) [![License](https://poser.pugx.org/phpmailer/phpmailer/license.svg)](https://packagist.org/packages/phpmailer/phpmailer) [![API Docs](https://github.com/phpmailer/phpmailer/workflows/Docs/badge.svg)](https://phpmailer.github.io/PHPMailer/)
 
-When working on email sending code you'll find yourself worrying about what might happen if all these test emails got sent to your mailing list. The solution is to use a fake mail server, one that acts just like the real thing, but just doesn't actually send anything out. Some offer web interfaces, feedback, logging, the ability to return specific error codes, all things that are useful for testing error handling, authentication etc. Here's a selection of mail testing tools you might like to try:
+## Features
+- Probably the world's most popular code for sending email from PHP!
+- Used by many open-source projects: WordPress, Drupal, 1CRM, SugarCRM, Yii, Joomla! and many more
+- Integrated SMTP support – send without a local mail server
+- Send emails with multiple To, CC, BCC and Reply-to addresses
+- Multipart/alternative emails for mail clients that do not read HTML email
+- Add attachments, including inline
+- Support for UTF-8 content and 8bit, base64, binary, and quoted-printable encodings
+- SMTP authentication with LOGIN, PLAIN, CRAM-MD5, and XOAUTH2 mechanisms over SMTPS and SMTP+STARTTLS transports
+- Validates email addresses automatically
+- Protects against header injection attacks
+- Error messages in over 50 languages!
+- DKIM and S/MIME signing support
+- Compatible with PHP 5.5 and later, including PHP 8.0
+- Namespaced to prevent name clashes
+- Much more!
 
-*   [FakeEmail](https://github.com/tomwardill/FakeEmail), a Python-based fake mail server with a web interface.
-*   [smtp-sink](http://www.postfix.org/smtp-sink.1.html), part of the Postfix mail server, so you may have this installed already. This is used in the Travis-CI configuration to run PHPMailer's unit tests.
-*   [smtp4dev](https://github.com/rnwood/smtp4dev), a dummy SMTP server for Windows and Linux.
-*   [fakesendmail.sh](https://github.com/PHPMailer/PHPMailer/blob/master/test/fakesendmail.sh), part of PHPMailer's test setup, this is a shell script that emulates sendmail for testing 'mail' or 'sendmail' methods in PHPMailer.
-*   [HELO](https://usehelo.com), a very nice (commercial) mail server desktop app from BeyondCode, and [how to set it up for local testing](https://usehelo.com/blog/how-to-use-helo-with-phps-mail-function).
-*   [msglint](http://tools.ietf.org/tools/msglint/), not a mail server, the IETF's MIME structure analyser checks the formatting of your messages.
-*   [MailHog](https://github.com/les-enovateurs/mailhog-examples), a Go-based email testing tool for developers with a web interface. You can use it with Docker and GitHub Actions to test your mails. The repository also contains a small part of PHPMailer's setup.
+## Why you might need it
+Many PHP developers need to send email from their code. The only PHP function that supports this directly is [`mail()`](https://www.php.net/manual/en/function.mail.php). However, it does not provide any assistance for making use of popular features such as encryption, authentication, HTML messages, and attachments.
 
-Most of these examples use the `example.com` and `example.net` domains. These domains are reserved by IANA for illustrative purposes, as documented in [RFC 2606](http://tools.ietf.org/html/rfc2606). Don't use made-up domains like 'mydomain.com' or 'somedomain.com' in examples as someone, somewhere, probably owns them!
+Formatting email correctly is surprisingly difficult. There are myriad overlapping (and conflicting) standards, requiring tight adherence to horribly complicated formatting and encoding rules – the vast majority of code that you'll find online that uses the `mail()` function directly is just plain wrong, if not unsafe!
 
-## Security note
-Before running these examples in a web server, you'll need to rename them with '.php' extensions. They are supplied as '.phps' files which will usually be displayed with syntax highlighting by PHP instead of running them. This prevents potential security issues with running potential spam-gateway code if you happen to deploy these code examples on a live site - _please don't do that!_
+The PHP `mail()` function usually sends via a local mail server, typically fronted by a `sendmail` binary on Linux, BSD, and macOS platforms, however, Windows usually doesn't include a local mail server; PHPMailer's integrated SMTP client allows email sending on all platforms without needing a local mail server. Be aware though, that the `mail()` function should be avoided when possible; it's both faster and [safer](https://exploitbox.io/paper/Pwning-PHP-Mail-Function-For-Fun-And-RCE.html) to use SMTP to localhost.
 
-Similarly, don't leave your passwords in these files as they will be visible to the world!
+*Please* don't be tempted to do it yourself – if you don't use PHPMailer, there are many other excellent libraries that
+you should look at before rolling your own. Try [SwiftMailer](https://swiftmailer.symfony.com/)
+, [Laminas/Mail](https://docs.laminas.dev/laminas-mail/), [ZetaComponents](https://github.com/zetacomponents/Mail) etc.
 
-## [mail.phps](mail.phps)
+## License
+This software is distributed under the [LGPL 2.1](http://www.gnu.org/licenses/lgpl-2.1.html) license, along with the [GPL Cooperation Commitment](https://gplcc.github.io/gplcc/). Please read [LICENSE](https://github.com/PHPMailer/PHPMailer/blob/master/LICENSE) for information on the software availability and distribution.
 
-This is a basic example which creates an email message from an external HTML file, creates a plain text body, sets various addresses, adds an attachment and sends the message. It uses PHP's built-in mail() function which is the simplest to use, but relies on the presence of a local mail server, something which is not usually available on Windows. If you find yourself in that situation, either install a local mail server, or use a remote one and send using SMTP instead.
+## Installation & loading
+PHPMailer is available on [Packagist](https://packagist.org/packages/phpmailer/phpmailer) (using semantic versioning), and installation via [Composer](https://getcomposer.org) is the recommended way to install PHPMailer. Just add this line to your `composer.json` file:
 
-## [simple_contact_form.phps](simple_contact_form.phps)
+```json
+"phpmailer/phpmailer": "^6.2"
+```
 
-This is probably the most common reason for using PHPMailer - building a contact form. This example has a basic, unstyled form and also illustrates how to filter input data before using it, how to validate addresses, how to avoid being abused as a spam gateway, and how to address messages correctly so that you don't fail SPF checks.
+or run
 
-## [exceptions.phps](exceptions.phps)
+```sh
+composer require phpmailer/phpmailer
+```
 
-Like the mail example, but shows how to use PHPMailer's optional exceptions for error handling.
+Note that the `vendor` folder and the `vendor/autoload.php` script are generated by Composer; they are not part of PHPMailer.
 
-## [extending.phps](extending.phps)
+If you want to use the Gmail XOAUTH2 authentication class, you will also need to add a dependency on the `league/oauth2-client` package in your `composer.json`.
 
-This shows how to create a subclass of PHPMailer to customise its behaviour and simplify coding in your app.
+Alternatively, if you're not using Composer, you
+can [download PHPMailer as a zip file](https://github.com/PHPMailer/PHPMailer/archive/master.zip), (note that docs and examples are not included in the zip file), then copy the contents of the PHPMailer folder into one of the `include_path` directories specified in your PHP configuration and load each class file manually:
 
-## [smtp.phps](smtp.phps)
+```php
+<?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-A simple example sending using SMTP with authentication.
+require 'path/to/PHPMailer/src/Exception.php';
+require 'path/to/PHPMailer/src/PHPMailer.php';
+require 'path/to/PHPMailer/src/SMTP.php';
+```
 
-## [smtp_no_auth.phps](smtp_no_auth.phps)
+If you're not using the `SMTP` class explicitly (you're probably not), you don't need a `use` line for the SMTP class. Even if you're not using exceptions, you do still need to load the `Exception` class as it is used internally.
 
-A simple example sending using SMTP without authentication.
+## Legacy versions
+PHPMailer 5.2 (which is compatible with PHP 5.0 — 7.0) is no longer supported, even for security updates. You will find the latest version of 5.2 in the [5.2-stable branch](https://github.com/PHPMailer/PHPMailer/tree/5.2-stable). If you're using PHP 5.5 or later (which you should be), switch to the 6.x releases.
 
-## [send_file_upload.phps](send_file_upload.phps)
+### Upgrading from 5.2
+The biggest changes are that source files are now in the `src/` folder, and PHPMailer now declares the namespace `PHPMailer\PHPMailer`. This has several important effects – [read the upgrade guide](https://github.com/PHPMailer/PHPMailer/tree/master/UPGRADING.md) for more details.
 
-Lots of people want to do this... This is a simple form which accepts a file upload and emails it.
+### Minimal installation
+While installing the entire package manually or with Composer is simple, convenient, and reliable, you may want to include only vital files in your project. At the very least you will need [src/PHPMailer.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/PHPMailer.php). If you're using SMTP, you'll need [src/SMTP.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/SMTP.php), and if you're using POP-before SMTP (*very* unlikely!), you'll need [src/POP3.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/POP3.php). You can skip the [language](https://github.com/PHPMailer/PHPMailer/tree/master/language/) folder if you're not showing errors to users and can make do with English-only errors. If you're using XOAUTH2 you will need [src/OAuth.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/OAuth.php) as well as the Composer dependencies for the services you wish to authenticate with. Really, it's much easier to use Composer!
 
-## [send_multiple_file_upload.phps](send_multiple_file_upload.phps)
+## A Simple Example
 
-A slightly more complex form that allows uploading multiple files at once and sends all of them as attachments to an email.
+```php
+<?php
+//Import PHPMailer classes into the global namespace
+//These must be at the top of your script, not inside a function
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
-## [sendmail.phps](sendmail.phps)
+//Load Composer's autoloader
+require 'vendor/autoload.php';
 
-A simple example using sendmail. Sendmail is a program (usually found on Linux/BSD, OS X and other UNIX-alikes) that can be used to submit messages to a local mail server without a lengthy SMTP conversation. It's probably the fastest sending mechanism, but lacks some error reporting features. There are sendmail emulators for most popular mail servers including postfix, qmail, exim etc.
+//Instantiation and passing `true` enables exceptions
+$mail = new PHPMailer(true);
 
-## [gmail.phps](gmail.phps)
+try {
+    //Server settings
+    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
+    $mail->isSMTP();                                            //Send using SMTP
+    $mail->Host       = 'smtp.example.com';                     //Set the SMTP server to send through
+    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+    $mail->Username   = 'user@example.com';                     //SMTP username
+    $mail->Password   = 'secret';                               //SMTP password
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
+    $mail->Port       = 587;                                    //TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
 
-Submitting email via Google's Gmail service is a popular use of PHPMailer. It's much the same as normal SMTP sending, just with some specific settings, namely using TLS encryption, authentication is enabled, and it connects to the SMTP submission port 587 on the smtp.gmail.com host. This example does all that.
+    //Recipients
+    $mail->setFrom('from@example.com', 'Mailer');
+    $mail->addAddress('joe@example.net', 'Joe User');     //Add a recipient
+    $mail->addAddress('ellen@example.com');               //Name is optional
+    $mail->addReplyTo('info@example.com', 'Information');
+    $mail->addCC('cc@example.com');
+    $mail->addBCC('bcc@example.com');
 
-## [gmail_xoauth.phps](gmail_xoauth.phps)
+    //Attachments
+    $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
+    $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
 
-Gmail now likes you to use XOAUTH2 for SMTP authentication. This is extremely laborious to set up, but once it's done you can use it repeatedly and will no longer need Gmail's ineptly-named "Allow less secure apps" setting enabled. [Read the guide in the wiki](https://github.com/PHPMailer/PHPMailer/wiki/Using-Gmail-with-XOAUTH2) for how to set it up.
+    //Content
+    $mail->isHTML(true);                                  //Set email format to HTML
+    $mail->Subject = 'Here is the subject';
+    $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+    $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
-## [pop_before_smtp.phps](pop_before_smtp.phps)
+    $mail->send();
+    echo 'Message has been sent';
+} catch (Exception $e) {
+    echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+}
+```
 
-Back in the stone age, before effective SMTP authentication mechanisms were available, it was common for ISPs to use POP-before-SMTP authentication. As it implies, you authenticate using the POP3 protocol (an older protocol now mostly replaced by the far superior IMAP), and then the SMTP server will allow send access from your IP address for a short while, usually 5-15 minutes. PHPMailer includes a basic POP3 protocol client with just enough functionality to carry out this sequence - it's just like a normal SMTP conversation (without authentication), but connects via POP3 first.
+You'll find plenty to play with in the [examples](https://github.com/PHPMailer/PHPMailer/tree/master/examples) folder, which covers many common scenarios including sending through gmail, building contact forms, sending to mailing lists, and more.
 
-## [mailing_list.phps](mailing_list.phps)
+If you are re-using the instance (e.g. when sending to a mailing list), you may need to clear the recipient list to avoid sending duplicate messages. See [the mailing list example](https://github.com/PHPMailer/PHPMailer/blob/master/examples/mailing_list.phps) for further guidance.
 
-This is a somewhat naïve, but reasonably efficient example of sending similar emails to a list of different addresses. It sets up a PHPMailer instance using SMTP, then connects to a MySQL database to retrieve a list of recipients. The code loops over this list, sending email to each person using their info and marks them as sent in the database. It makes use of SMTP keepalive which saves reconnecting and re-authenticating between each message.
+That's it. You should now be ready to use PHPMailer!
 
-## [ssl_options.phps](ssl_options.phps)
+## Localization
+PHPMailer defaults to English, but in the [language](https://github.com/PHPMailer/PHPMailer/tree/master/language/) folder you'll find many translations for PHPMailer error messages that you may encounter. Their filenames contain [ISO 639-1](http://en.wikipedia.org/wiki/ISO_639-1) language code for the translations, for example `fr` for French. To specify a language, you need to tell PHPMailer which one to use, like this:
 
-PHP 5.6 introduced SSL certificate verification by default, and this applies to mail servers exactly as it does to web servers. Unfortunately, SSL misconfiguration in mail servers is quite common, so this caused a common problem: those that were previously using servers with bad configs suddenly found they stopped working when they upgraded PHP. PHPMailer provides a mechanism to disable SSL certificate verification as a workaround and this example shows how to do it. Bear in mind that this is **not** a good approach - the right way is to fix your mail server config!
+```php
+//To load the French version
+$mail->setLanguage('fr', '/optional/path/to/language/directory/');
+```
 
-## [smime_signed_mail.phps](smime_signed_mail.phps)
+We welcome corrections and new languages – if you're looking for corrections to do, run the [PHPMailerLangTest.php](https://github.com/PHPMailer/PHPMailer/tree/master/test/PHPMailerLangTest.php) script in the tests folder and it will show any missing translations.
 
-An example of how to sign messages using [S/MIME](https://en.wikipedia.org/wiki/S/MIME), ensuring that your data can't be tampered with in transit, and proves to recipients that it was you that sent it.
+## Documentation
+Start reading at the [GitHub wiki](https://github.com/PHPMailer/PHPMailer/wiki). If you're having trouble, head for [the troubleshooting guide](https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting) as it's frequently updated.
 
-* * *
+Examples of how to use PHPMailer for common scenarios can be found in the [examples](https://github.com/PHPMailer/PHPMailer/tree/master/examples) folder. If you're looking for a good starting point, we recommend you start with [the Gmail example](https://github.com/PHPMailer/PHPMailer/tree/master/examples/gmail.phps).
 
-## [smtp_check.phps](smtp_check.phps)
+To reduce PHPMailer's deployed code footprint, examples are not included if you load PHPMailer via Composer or via [GitHub's zip file download](https://github.com/PHPMailer/PHPMailer/archive/master.zip), so you'll need to either clone the git repository or use the above links to get to the examples directly.
 
-This is an example showing how to use the SMTP class by itself (without PHPMailer) to check an SMTP connection.
+Complete generated API documentation is [available online](https://phpmailer.github.io/PHPMailer/).
 
-## [smtp_low_memory.phps](smtp_low_memory.phps)
+You can generate complete API-level documentation by running `phpdoc` in the top-level folder, and documentation will appear in the `docs` folder, though you'll need to have [PHPDocumentor](http://www.phpdoc.org) installed. You may find [the unit tests](https://github.com/PHPMailer/PHPMailer/blob/master/test/PHPMailerTest.php) a good reference for how to do various operations such as encryption.
 
-This demonstrates how to extend the SMTP class and make PHPMailer use it. In this case it's an effort to make the SMTP class use less memory when sending large attachments.
+If the documentation doesn't cover what you need, search the [many questions on Stack Overflow](http://stackoverflow.com/questions/tagged/phpmailer), and before you ask a question about "SMTP Error: Could not connect to SMTP host.", [read the troubleshooting guide](https://github.com/PHPMailer/PHPMailer/wiki/Troubleshooting).
 
-* * *
+## Tests
+[PHPMailer tests](https://github.com/PHPMailer/PHPMailer/tree/master/test/) use PHPUnit 9, with [a polyfill](https://github.com/Yoast/PHPUnit-Polyfills) to let 9-style tests run on older PHPUnit and PHP versions.
+
+[![Test status](https://github.com/PHPMailer/PHPMailer/workflows/Tests/badge.svg)](https://github.com/PHPMailer/PHPMailer/actions)
+
+If this isn't passing, is there something you can do to help?
+
+## Security
+Please disclose any vulnerabilities found responsibly – report security issues to the maintainers privately.
+
+See [SECURITY](https://github.com/PHPMailer/PHPMailer/tree/master/SECURITY.md) and [PHPMailer's security advisories on GitHub](https://github.com/PHPMailer/PHPMailer/security). 
+
+## Contributing
+Please submit bug reports, suggestions and pull requests to the [GitHub issue tracker](https://github.com/PHPMailer/PHPMailer/issues).
+
+We're particularly interested in fixing edge-cases, expanding test coverage and updating translations.
+
+If you found a mistake in the docs, or want to add something, go ahead and amend the wiki – anyone can edit it.
+
+If you have git clones from prior to the move to the PHPMailer GitHub organisation, you'll need to update any remote URLs referencing the old GitHub location with a command like this from within your clone:
+
+```sh
+git remote set-url upstream https://github.com/PHPMailer/PHPMailer.git
+```
+
+Please *don't* use the SourceForge or Google Code projects any more; they are obsolete and no longer maintained.
+
+## Sponsorship
+Development time and resources for PHPMailer are provided by [Smartmessages.net](https://info.smartmessages.net/), the world's only privacy-first  email marketing system.
+
+<a href="https://info.smartmessages.net/"><img src="https://www.smartmessages.net/img/smartmessages-logo.svg" width="550" alt="Smartmessages.net privacy-first email marketing logo"></a>
+
+
+Contributions are very welcome, whether in beer 🍺, T-shirts 👕, or cold, hard cash 💰. Sponsorship through GitHub is a simple and convenient way to say "thank you" to PHPMailer's maintainers and contributors – just click the "Sponsor" button [on the project page](https://github.com/PHPMailer/PHPMailer).
+
+## Changelog
+See [changelog](changelog.md).
+
+## History
+- PHPMailer was originally written in 2001 by Brent R. Matzelle as a [SourceForge project](http://sourceforge.net/projects/phpmailer/).
+- [Marcus Bointon](https://github.com/Synchro) (`coolbru` on SF) and Andy Prevost (`codeworxtech`) took over the project in 2004.
+- Became an Apache incubator project on Google Code in 2010, managed by Jim Jagielski.
+- Marcus created [his fork on GitHub](https://github.com/Synchro/PHPMailer) in 2008.
+- Jim and Marcus decide to join forces and use GitHub as the canonical and official repo for PHPMailer in 2013.
+- PHPMailer moves to [the PHPMailer organisation](https://github.com/PHPMailer) on GitHub in 2013.
+
+### What's changed since moving from SourceForge?
+- Official successor to the SourceForge and Google Code projects.
+- Test suite.
+- Continuous integration with Github Actions.
+- Composer support.
+- Public development.
+- Additional languages and language strings.
+- CRAM-MD5 authentication support.
+- Preserves full repo history of authors, commits and branches from the original SourceForge project.
